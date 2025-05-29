@@ -8,8 +8,8 @@ function Navbar() {
         <div>
           <Link to="/">Profile</Link>
           <Link to="/contact">Contact</Link>
-          <Link to="/dashboard/publications">Publications</Link>
-          <Link to="/dashboard/projects">Projects</Link>
+          <Link to="/publications">Publications</Link>
+          <Link to="/projects">Projects</Link>
           <Link to="/login">Login</Link>
         </div>
       </nav>

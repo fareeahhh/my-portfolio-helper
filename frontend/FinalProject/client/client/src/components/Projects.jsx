@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import './Projects.css';
-import API from '../../services/api';
+
 
 function Projects() {
   // Hardcoded sample project data

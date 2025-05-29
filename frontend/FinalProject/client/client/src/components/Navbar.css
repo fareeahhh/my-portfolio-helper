@@ -1,16 +1,59 @@
 .navbar {
-  background: #333;
-  color: #fff;
-  padding: 0.75rem 1.5rem;
   display: flex;
   justify-content: space-between;
   align-items: center;
+  background: #1f2937; /* Dark gray/navy */
+  color: white;
+  padding: 0.75rem 2rem;
+  font-family: 'Arial', sans-serif;
 }
-.navbar a {
-  color: #fff;
-  margin-left: 1rem;
+
+.navbar h1 {
+  font-size: 1.5rem;
+}
+
+.navbar-links {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.navbar-links a,
+.dropdown-title {
+  color: white;
+  text-decoration: none;
+  cursor: pointer;
+  transition: color 0.2s ease;
+}
+
+.navbar-links a:hover,
+.dropdown-title:hover {
+  color: #38bdf8; /* Light blue */
+}
+
+.dropdown {
+  position: relative;
+}
+.dropdown-menu {
+  display: flex; /* Show as flex by default (but controlled via React) */
+  flex-direction: column;
+  position: absolute;
+  top: 100%;
+  left: 0;
+  background: white;
+  color: #333;
+  min-width: 160px;
+  border-radius: 4px;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+  z-index: 10;
+}
+
+.dropdown-menu a {
+  padding: 0.5rem 1rem;
+  color: #333;
   text-decoration: none;
 }
-.navbar a:hover {
-  text-decoration: underline;
+
+.dropdown-menu a:hover {
+  background: #f1f1f1;
 }

@@ -1,5 +1,5 @@
 .publications-container {
-  max-width: 700px;
+  max-width: 1100px;
   margin: 2rem auto;
   background: #fff;
   border-radius: 10px;
@@ -15,13 +15,54 @@ h2 {
   color: #333;
 }
 
-.pub-form input {
-  width: 48%;
-  margin: 0.5rem 1%;
-  padding: 0.75rem;
+/* Feedback message */
+.feedback {
+  margin-bottom: 1rem;
+  padding: 0.5rem 1rem;
+  background: #f0f0f0;
+  border-left: 4px solid #007bff;
+  color: #333;
+  border-radius: 4px;
+}
+
+/* Form styling */
+.pub-form {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.pub-form input,
+.pub-form textarea {
+  flex: 1 1 48%;
+  padding: 0.5rem;
   border: 1px solid #ddd;
   border-radius: 6px;
   background: #f9f9f9;
+  font-size: 0.9rem;
+}
+
+.pub-form textarea {
+  min-height: 60px;
+}
+
+.pub-form input[type="checkbox"] {
+  flex: 0 0 auto;
+  margin-top: 0.5rem;
+}
+
+.pub-form label {
+  flex: 1 1 100%;
+  font-size: 0.9rem;
+  color: #555;
+}
+
+.pub-form .buttons {
+  flex: 1 1 100%;
+  display: flex;
+  gap: 0.5rem;
+  margin-top: 0.5rem;
 }
 
 .pub-form button {
@@ -29,7 +70,6 @@ h2 {
   color: #fff;
   border: none;
   padding: 0.5rem 1rem;
-  margin-top: 0.5rem;
   cursor: pointer;
   border-radius: 6px;
   transition: background 0.2s;
@@ -47,6 +87,7 @@ h2 {
   background: #5a6268;
 }
 
+/* Publication listing */
 .pub-list {
   list-style: none;
   padding: 0;
@@ -54,39 +95,66 @@ h2 {
 }
 
 .pub-list li {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin: 0.5rem 0;
-  padding: 0.75rem 1rem;
-  border-bottom: 1px solid #eee;
+  background: #f9f9f9;
+  margin-bottom: 1rem;
+  border-radius: 6px;
+  padding: 1rem;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.05);
 }
 
-.pub-list a {
-  margin-left: 1rem;
-  color: #007bff;
-  text-decoration: none;
+.pub-list li h3 {
+  margin: 0;
+  color: #333;
+}
+
+.pub-list li p {
+  margin: 0.25rem 0;
+  font-size: 0.9rem;
+  color: #555;
+  line-height: 1.4;
+}
+
+.pub-list li p strong {
+  color: #333;
+}
+
+.pub-list .tag {
+  display: inline-block;
+  background: #007bff;
+  color: #fff;
+  padding: 0.2rem 0.5rem;
+  margin-top: 0.25rem;
+  border-radius: 4px;
+  font-size: 0.8rem;
 }
 
 .pub-list button {
   background: #28a745;
   border: none;
   color: #fff;
-  margin-left: 0.5rem;
+  margin-right: 0.5rem;
   padding: 0.3rem 0.75rem;
   border-radius: 4px;
   cursor: pointer;
+  font-size: 0.85rem;
 }
 
 .pub-list .delete-btn {
   background: #dc3545;
 }
 
-.feedback {
-  margin-bottom: 1rem;
-  padding: 0.5rem 1rem;
-  background: #f0f0f0;
-  border-left: 4px solid #007bff;
-  color: #333;
-  border-radius: 4px;
+.pub-list button:hover {
+  opacity: 0.9;
+}
+
+/* Links styling */
+.pub-list a {
+  color: #007bff;
+  text-decoration: none;
+  margin-left: 0.5rem;
+  font-size: 0.85rem;
+}
+
+.pub-list a:hover {
+  text-decoration: underline;
 }

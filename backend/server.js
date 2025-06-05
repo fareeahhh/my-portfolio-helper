@@ -6,6 +6,11 @@ const morgan = require("morgan");
 const rateLimit = require("express-rate-limit");
 require("dotenv").config();
 
+// Import the User model
+const User = require("./models/User");
+// Import the Publication model
+const Publication = require("./models/Publication");
+
 const app = express();
 
 // Security Middleware
@@ -396,6 +401,248 @@ app.get("/api/blog/user/:userId", (req, res) => {
     userId: req.params.userId,
     endpoint: "/api/blog/user/:userId",
   });
+});
+
+// ===============================
+// TEST ROUTES - USER MODEL
+// ===============================
+app.post("/api/test/create-user", async (req, res) => {
+  try {
+    const testUser = new User({
+      name: "Dr. John Smith",
+      email: "john.smith@university.edu",
+      password: "password123",
+      title: "Professor",
+      currentPosition: "Professor of Computer Science",
+      university: "Tech University",
+      department: "Computer Science",
+      bio: "Research focused on AI and machine learning.",
+      researchInterests: [
+        "Artificial Intelligence",
+        "Machine Learning",
+        "Data Science",
+      ],
+    });
+
+    const savedUser = await testUser.save();
+
+    res.json({
+      success: true,
+      message: "Test user created successfully!",
+      user: {
+        id: savedUser._id,
+        name: savedUser.name,
+        email: savedUser.email,
+        title: savedUser.title,
+        university: savedUser.university,
+        profileCompleteness: savedUser.profileCompleteness,
+        createdAt: savedUser.createdAt,
+      },
+    });
+  } catch (error) {
+    res.status(400).json({
+      success: false,
+      message: "Error creating user",
+      error: error.message,
+    });
+  }
+});
+
+app.get("/api/test/get-users", async (req, res) => {
+  try {
+    const users = await User.find({}).select("-password").limit(10);
+
+    res.json({
+      success: true,
+      count: users.length,
+      users: users,
+    });
+  } catch (error) {
+    res.status(400).json({
+      success: false,
+      message: "Error fetching users",
+      error: error.message,
+    });
+  }
+});
+
+app.delete("/api/test/clear-users", async (req, res) => {
+  try {
+    const result = await User.deleteMany({});
+
+    res.json({
+      success: true,
+      message: `Deleted ${result.deletedCount} users`,
+      deletedCount: result.deletedCount,
+    });
+  } catch (error) {
+    res.status(400).json({
+      success: false,
+      message: "Error clearing users",
+      error: error.message,
+    });
+  }
+});
+
+// ===============================
+// TEST ROUTES - PUBLICATION MODEL
+// ===============================
+app.post("/api/test/create-publication", async (req, res) => {
+  try {
+    // First, get a user to associate the publication with
+    const user = await User.findOne({});
+    if (!user) {
+      return res.status(400).json({
+        success: false,
+        message:
+          "No user found. Create a user first using /api/test/create-user",
+      });
+    }
+
+    const testPublication = new Publication({
+      user: user._id,
+      title: "Machine Learning Applications in Academic Portfolio Management",
+      authors: [
+        {
+          name: user.name,
+          isMainAuthor: true,
+          affiliation: user.university,
+          email: user.email,
+        },
+        {
+          name: "Dr. Jane Doe",
+          isMainAuthor: false,
+          affiliation: "Research University",
+        },
+      ],
+      abstract:
+        "This paper explores the innovative applications of machine learning techniques in managing and optimizing academic portfolios. We propose a novel framework that leverages artificial intelligence to enhance research visibility and collaboration opportunities.",
+      publicationType: "journal-article",
+      venue: {
+        name: "Journal of Academic Technology",
+        type: "journal",
+        issn: "1234-5678",
+      },
+      publicationDate: {
+        year: 2024,
+        month: 3,
+        day: 15,
+      },
+      volumeInfo: {
+        volume: "42",
+        issue: "3",
+        pages: {
+          start: "123",
+          end: "145",
+        },
+      },
+      doi: "10.1234/jat.2024.03.123",
+      urls: {
+        publication: "https://example-journal.com/article/123",
+        pdf: "https://example-journal.com/article/123/pdf",
+      },
+      keywords: [
+        "machine learning",
+        "academic portfolios",
+        "artificial intelligence",
+        "research management",
+      ],
+      researchAreas: ["Computer Science", "Educational Technology"],
+      status: "published",
+      citations: {
+        count: 15,
+      },
+      metrics: {
+        downloads: 250,
+        views: 1200,
+      },
+      isFeatured: true,
+    });
+
+    const savedPublication = await testPublication.save();
+    const populatedPublication = await Publication.findById(
+      savedPublication._id
+    ).populate("user", "name title university");
+
+    res.json({
+      success: true,
+      message: "Test publication created successfully!",
+      publication: {
+        id: populatedPublication._id,
+        title: populatedPublication.title,
+        authors: populatedPublication.authors,
+        user: populatedPublication.user,
+        publicationType: populatedPublication.publicationType,
+        venue: populatedPublication.venue,
+        year: populatedPublication.publicationDate.year,
+        citations: populatedPublication.citations.count,
+        formattedCitation: populatedPublication.formattedCitation,
+      },
+    });
+  } catch (error) {
+    res.status(400).json({
+      success: false,
+      message: "Error creating publication",
+      error: error.message,
+    });
+  }
+});
+
+app.get("/api/test/get-publications", async (req, res) => {
+  try {
+    const publications = await Publication.find({})
+      .populate("user", "name title university profileImage")
+      .sort({ "publicationDate.year": -1 })
+      .limit(10);
+
+    res.json({
+      success: true,
+      count: publications.length,
+      publications: publications,
+    });
+  } catch (error) {
+    res.status(400).json({
+      success: false,
+      message: "Error fetching publications",
+      error: error.message,
+    });
+  }
+});
+
+app.get("/api/test/get-publications/:userId", async (req, res) => {
+  try {
+    const publications = await Publication.findByUser(req.params.userId);
+
+    res.json({
+      success: true,
+      count: publications.length,
+      publications: publications,
+    });
+  } catch (error) {
+    res.status(400).json({
+      success: false,
+      message: "Error fetching user publications",
+      error: error.message,
+    });
+  }
+});
+
+app.delete("/api/test/clear-publications", async (req, res) => {
+  try {
+    const result = await Publication.deleteMany({});
+
+    res.json({
+      success: true,
+      message: `Deleted ${result.deletedCount} publications`,
+      deletedCount: result.deletedCount,
+    });
+  } catch (error) {
+    res.status(400).json({
+      success: false,
+      message: "Error clearing publications",
+      error: error.message,
+    });
+  }
 });
 
 // 404 handler

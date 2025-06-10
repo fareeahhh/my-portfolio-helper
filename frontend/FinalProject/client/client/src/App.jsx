@@ -6,6 +6,9 @@ import Publications from './components/Publications';
 import Login from './pages/Login';
 import Register from './pages/Register';
 import Projects from './components/Projects';
+import Teaching from './components/Teaching';
+
+
 
 
 // Import Dashboard sections later
@@ -22,6 +25,9 @@ function App() {
           <Route path="/projects" element={<Projects />} />
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
+          <Route path="/teaching" element={<Teaching />} />
+
+          
         </Routes>
 
     </Router>

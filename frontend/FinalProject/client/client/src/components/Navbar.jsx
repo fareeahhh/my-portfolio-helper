@@ -44,7 +44,7 @@ function Navbar() {
             </div>
           )}
         </div>
-
+          <Link to="/teaching">Teaching</Link>
         <Link to="/login">Login</Link>
       </div>
     </nav>

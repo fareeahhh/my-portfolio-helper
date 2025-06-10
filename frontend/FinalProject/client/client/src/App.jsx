@@ -8,6 +8,10 @@ import Register from './pages/Register';
 import Projects from './components/Projects';
 import Teaching from './components/Teaching';
 import Grants from './components/Grants';
+import Media from './components/Media';
+import Gallary from './components/Gallary';
+
+
 import Presentations from './components/Presentations';
 
 
@@ -28,7 +32,12 @@ function App() {
           <Route path="/register" element={<Register />} />
           <Route path="/teaching" element={<Teaching />} />
           <Route path="/presentations" element={<Presentations />} />
-          <Route path="/dashboard/grants" element={<Grants />} />
+          <Route path="/grants" element={<Grants />} />
+          <Route path="/media" element={<Media />} />
+          <Route path="/gallary" element={<Gallary />} />
+
+
+
 
 
           

@@ -53,13 +53,13 @@ function Navbar() {
           <span className="dropdown-title">Media ▾</span>
           {mediaOpen && (
             <div className="dropdown-menu">
-              <Link to="/dashboard/media">Media Coverage</Link>
-              <Link to="/dashboard/gallery">Photo Gallery</Link>
+              <Link to="/media">Media Coverage</Link>
+              <Link to="/gallary">Photo Gallery</Link>
             </div>
           )}
         </div>
 
-        <Link to="/dashboard/grants">Grants</Link>
+        <Link to="/grants">Grants</Link>
 
 
         <Link to="/login">Login</Link>

@@ -7,7 +7,8 @@ import Login from './pages/Login';
 import Register from './pages/Register';
 import Projects from './components/Projects';
 import Teaching from './components/Teaching';
-
+import Grants from './components/Grants';
+import Presentations from './components/Presentations';
 
 
 
@@ -26,6 +27,9 @@ function App() {
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
           <Route path="/teaching" element={<Teaching />} />
+          <Route path="/presentations" element={<Presentations />} />
+          <Route path="/dashboard/grants" element={<Grants />} />
+
 
           
         </Routes>

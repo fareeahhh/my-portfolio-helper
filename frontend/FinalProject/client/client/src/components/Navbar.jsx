@@ -1,9 +1,10 @@
 import { Link } from 'react-router-dom';
-import './Navbar.css'; // Or Tailwind classes for modern style
+import './Navbar.css';
 import { useState } from 'react';
 
 function Navbar() {
   const [portfolioOpen, setPortfolioOpen] = useState(false);
+  const [academicsOpen, setAcademicsOpen] = useState(false);
   const [mediaOpen, setMediaOpen] = useState(false);
 
   return (
@@ -24,7 +25,21 @@ function Navbar() {
             <div className="dropdown-menu">
               <Link to="/publications">Publications</Link>
               <Link to="/projects">Projects</Link>
-              {/* Future: Add more portfolio links here */}
+            </div>
+          )}
+        </div>
+
+        {/* Academics Dropdown */}
+        <div
+          className="dropdown"
+          onMouseEnter={() => setAcademicsOpen(true)}
+          onMouseLeave={() => setAcademicsOpen(false)}
+        >
+          <span className="dropdown-title">Academics ▾</span>
+          {academicsOpen && (
+            <div className="dropdown-menu">
+              <Link to="/teaching">Teachings</Link>
+              <Link to="/presentations">Presentations</Link>
             </div>
           )}
         </div>
@@ -40,11 +55,13 @@ function Navbar() {
             <div className="dropdown-menu">
               <Link to="/dashboard/media">Media Coverage</Link>
               <Link to="/dashboard/gallery">Photo Gallery</Link>
-              {/* Future: Add more media links here */}
             </div>
           )}
         </div>
-          <Link to="/teaching">Teaching</Link>
+
+        <Link to="/dashboard/grants">Grants</Link>
+
+
         <Link to="/login">Login</Link>
       </div>
     </nav>

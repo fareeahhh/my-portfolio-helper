@@ -1,100 +1,98 @@
-import { useState, useEffect } from 'react';
-import API from '../services/api';
 import './Profile.css';
+import { useState } from 'react';
 
-function Profile() {
-  const [profile, setProfile] = useState({
-    name: '',
-    position: '',
-    university: '',
-    bio: ''
-  });
-  const [isEditing, setIsEditing] = useState(false);
-  const [loading, setLoading] = useState(true);
-  const [feedback, setFeedback] = useState('');
+const defaultUser = {
+  name: "Dr. Ayesha Khan",
+  email: "ayesha.khan@university.edu",
+  title: "Assistant Professor",
+  currentPosition: "Computer Science Department",
+  university: "National University of Technology",
+  department: "Computer Vision Lab",
+  bio: "My research interests span AI, computer vision, and robotics for social good.",
+  profileImage: "/profile.jpg",
+  cv: "/cv/ayesha-cv.pdf",
+  phone: "+92 300 1234567",
+  website: "https://ayeshakhan.dev",
+  researchInterests: ["Deep Learning", "Disaster Robotics", "Explainable AI"],
+  keywords: ["AI", "Robotics", "CV", "Ethics"],
+  education: [
+    "PhD in AI – MIT (2020)",
+    "MS in Computer Vision – FAST (2016)",
+    "BS in Computer Science – NUST (2014)"
+  ],
+  linkedin: "https://linkedin.com/in/ayeshakhan",
+  orcid: "https://orcid.org/0000-0002-1825-0097",
+  researchGate: "https://www.researchgate.net/profile/Ayesha_Khan",
+  googleScholar: "https://scholar.google.com/citations?user=xyz123",
+  twitter: "https://twitter.com/drayeshakhan",
+  profileVisibility: true,
+  showEmail: false,
+  showPhone: false,
+  sectionsVisibility: {
+    education: true,
+    interests: true,
+    contact: false
+  },
+  profileCompleteness: 88,
+  profileSlug: "ayesha-khan",
+  createdAt: "2024-01-01",
+  updatedAt: "2025-05-20",
+  lastLogin: "2025-06-10"
+};
 
-  // Fetch profile data
-  useEffect(() => {
-    const fetchProfile = async () => {
-      try {
-        const res = await API.get('/profile', {
-          headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
-        });
-        if (res.data) setProfile(res.data);
-      } catch (err) {
-        console.error(err);
-        setFeedback('Failed to load profile. Please try again.');
-      } finally {
-        setLoading(false);
-      }
-    };
-    fetchProfile();
-  }, []);
-
-  // Handle input changes
-  const handleChange = (e) => {
-    setProfile({ ...profile, [e.target.name]: e.target.value });
-  };
-
-  // Save profile
-  const handleSave = async () => {
-    if (!profile.name || !profile.position || !profile.university) {
-      setFeedback('Please fill in all required fields.');
-      return;
-    }
-
-    try {
-      await API.post('/profile', profile, {
-        headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
-      });
-      setIsEditing(false);
-      setFeedback('Profile updated successfully!');
-    } catch (err) {
-      console.error(err);
-      setFeedback('Error saving profile. Please try again.');
-    }
-  };
-
-  if (loading) {
-    return <div className="profile-container"><p>Loading profile...</p></div>;
-  }
+export default function UserProfilePage() {
+  const [user, setUser] = useState(defaultUser);
 
   return (
-    <div className="profile-container">
-      <h2>My Profile</h2>
-
-      {feedback && <div className="feedback">{feedback}</div>}
-
-      {isEditing ? (
-        <div className="profile-form">
-          <label>Name*</label>
-          <input name="name" placeholder="Name" value={profile.name} onChange={handleChange} required />
-
-          <label>Position*</label>
-          <input name="position" placeholder="Position" value={profile.position} onChange={handleChange} required />
-
-          <label>University*</label>
-          <input name="university" placeholder="University" value={profile.university} onChange={handleChange} required />
-
-          <label>Bio</label>
-          <textarea name="bio" placeholder="Tell us about yourself..." value={profile.bio} onChange={handleChange}></textarea>
-
-          <div className="profile-buttons">
-            <button onClick={handleSave}>Save</button>
-            <button className="cancel-btn" onClick={() => { setIsEditing(false); setFeedback(''); }}>Cancel</button>
+    <div className="user-profile">
+      <div className="user-header">
+        <img src={user.profileImage} alt="Profile" className="profile-img" />
+        <div className="user-info">
+          <h2>{user.name}</h2>
+          <p>{user.title}, {user.currentPosition}</p>
+          <p>{user.university} – {user.department}</p>
+          <p>{user.bio}</p>
+          <div className="progress-bar">
+            <div className="progress-fill" style={{ width: `${user.profileCompleteness}%` }}></div>
           </div>
+          <p className="progress-text">Profile {user.profileCompleteness}% complete</p>
         </div>
-      ) : (
-        <div className="profile-view">
-          <p><strong>Name:</strong> {profile.name}</p>
-          <p><strong>Position:</strong> {profile.position}</p>
-          <p><strong>University:</strong> {profile.university}</p>
-          <p><strong>Bio:</strong> {profile.bio || 'No bio added yet.'}</p>
-          <button onClick={() => setIsEditing(true)}>Edit Profile</button>
-        </div>
-      )}
+      </div>
+
+      <div className="user-section">
+        <h3>Academic Interests</h3>
+        <ul>{user.researchInterests.map((item, i) => <li key={i}>{item}</li>)}</ul>
+      </div>
+
+      <div className="user-section">
+        <h3>Education</h3>
+        <ul>{user.education.map((edu, i) => <li key={i}>{edu}</li>)}</ul>
+      </div>
+
+      <div className="user-section">
+        <h3>Social Links</h3>
+        <ul>
+          <li><a href={user.linkedin}>LinkedIn</a></li>
+          <li><a href={user.orcid}>ORCID</a></li>
+          <li><a href={user.researchGate}>ResearchGate</a></li>
+          <li><a href={user.googleScholar}>Google Scholar</a></li>
+          <li><a href={user.twitter}>Twitter</a></li>
+        </ul>
+      </div>
+
+      <div className="user-section">
+        <h3>Uploads</h3>
+        <p><strong>CV:</strong> <a href={user.cv} target="_blank">Download</a></p>
+      </div>
+
+      <div className="user-section">
+        <h3>Privacy Settings</h3>
+        <ul>
+          <li>Email Visible: {user.showEmail ? "Yes" : "No"}</li>
+          <li>Phone Visible: {user.showPhone ? "Yes" : "No"}</li>
+          <li>Profile Public: {user.profileVisibility ? "Yes" : "No"}</li>
+        </ul>
+      </div>
     </div>
   );
 }
-
-export default Profile;

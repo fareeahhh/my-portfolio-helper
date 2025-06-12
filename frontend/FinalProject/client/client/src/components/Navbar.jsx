@@ -12,7 +12,6 @@ function Navbar() {
       <h1>My Portfolio Helper</h1>
       <div className="navbar-links">
         <Link to="/">Home</Link>
-        <Link to="/contact">Contact</Link>
 
         {/* Portfolio Dropdown */}
         <div
@@ -55,11 +54,19 @@ function Navbar() {
             <div className="dropdown-menu">
               <Link to="/media">Media Coverage</Link>
               <Link to="/gallary">Photo Gallery</Link>
+              <Link to="/blog">Blogs</Link>
+
+
             </div>
           )}
         </div>
+        
+        <Link to="/analyticsdashboard">Analytics</Link>
 
         <Link to="/grants">Grants</Link>
+        <Link to="/contactpage">Contact us</Link>
+
+
 
 
         <Link to="/login">Login</Link>

@@ -1,6 +1,12 @@
 # my-portfolio-helper
 Academic Portfolio Management Platform - MERN Stack Web Programming Project
 
+## Folder path:
+frontend/FinalProject/client/client/src/components
+
+
+---------------------------------------------------------------------------------------
+
 
 ## 🚀 Getting Started (Using Bun + Vite)
 

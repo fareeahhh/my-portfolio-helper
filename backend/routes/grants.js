@@ -1,72 +1,85 @@
 const express = require("express");
 const router = express.Router();
+const Grant = require("../models/Grant");
 
-// @desc    Test grants route
+// @desc    Test route
 // @route   GET /api/grants/test
 // @access  Public
 router.get("/test", (req, res) => {
-  res.json({ message: "Grants routes working!" });
+  res.json({ message: "✅ Grants route working!" });
 });
-
-// SPECIFIC ROUTES FIRST
 
 // @desc    Get all grants for a user
 // @route   GET /api/grants/user/:userId
 // @access  Public
-router.get("/user/:userId", (req, res) => {
-  res.json({ message: "Get grants - Coming soon!" });
+router.get("/user/:userId", async (req, res) => {
+  try {
+    const grants = await Grant.find({ user: req.params.userId }).sort({
+      startDate: -1,
+    });
+    res.status(200).json(grants);
+  } catch (error) {
+    res.status(500).json({ error: "Failed to fetch grants" });
+  }
 });
-
-// @desc    Get grants by status (active, completed, pending)
-// @route   GET /api/grants/status/:userId/:status
-// @access  Public
-router.get("/status/:userId/:status", (req, res) => {
-  res.json({ message: "Get grants by status - Coming soon!" });
-});
-
-// @desc    Get grants by funding agency
-// @route   GET /api/grants/agency/:userId/:agency
-// @access  Public
-router.get("/agency/:userId/:agency", (req, res) => {
-  res.json({ message: "Get grants by agency - Coming soon!" });
-});
-
-// PARAMETERIZED ROUTES LAST
 
 // @desc    Get single grant
 // @route   GET /api/grants/:id
 // @access  Public
-router.get("/:id", (req, res) => {
-  res.json({ message: "Get single grant - Coming soon!" });
+router.get("/:id", async (req, res) => {
+  try {
+    const grant = await Grant.findById(req.params.id);
+    if (!grant) return res.status(404).json({ error: "Grant not found" });
+    res.status(200).json(grant);
+  } catch (error) {
+    res.status(500).json({ error: "Failed to fetch grant" });
+  }
 });
 
-// POST, PUT, DELETE routes
-// @desc    Add new grant
+// @desc    Create a new grant
 // @route   POST /api/grants
 // @access  Private
-router.post("/", (req, res) => {
-  res.json({ message: "Add grant - Coming soon!" });
+router.post("/", async (req, res) => {
+  try {
+    const grant = new Grant(req.body);
+    const saved = await grant.save();
+    res.status(201).json(saved);
+  } catch (error) {
+    res
+      .status(400)
+      .json({ error: "Failed to create grant", details: error.message });
+  }
 });
 
-// @desc    Update grant
+// @desc    Update a grant
 // @route   PUT /api/grants/:id
 // @access  Private
-router.put("/:id", (req, res) => {
-  res.json({ message: "Update grant - Coming soon!" });
+router.put("/:id", async (req, res) => {
+  try {
+    const updated = await Grant.findByIdAndUpdate(req.params.id, req.body, {
+      new: true,
+      runValidators: true,
+    });
+    if (!updated) return res.status(404).json({ error: "Grant not found" });
+    res.status(200).json(updated);
+  } catch (error) {
+    res
+      .status(400)
+      .json({ error: "Failed to update grant", details: error.message });
+  }
 });
 
-// @desc    Delete grant
+// @desc    Delete a grant
 // @route   DELETE /api/grants/:id
 // @access  Private
-router.delete("/:id", (req, res) => {
-  res.json({ message: "Delete grant - Coming soon!" });
-});
-
-// @desc    Add co-investigator to grant
-// @route   POST /api/grants/:id/co-investigators
-// @access  Private
-router.post("/:id/co-investigators", (req, res) => {
-  res.json({ message: "Add co-investigator - Coming soon!" });
+router.delete("/:id", async (req, res) => {
+  try {
+    const deleted = await Grant.findByIdAndDelete(req.params.id);
+    if (!deleted) return res.status(404).json({ error: "Grant not found" });
+    res.status(200).json({ message: "Grant deleted" });
+  } catch (error) {
+    res.status(500).json({ error: "Failed to delete grant" });
+  }
 });
 
 module.exports = router;

@@ -12,6 +12,7 @@ const Publication = require("./models/Publication");
 const projectRoutes = require("./routes/projects");
 const teachingRoutes = require("./routes/teaching");
 const presentationRoutes = require("./routes/presentations");
+const grantRoutes = require("./routes/grants");
 
 const app = express();
 
@@ -237,20 +238,7 @@ app.use("/api/presentations", presentationRoutes);
 // ===============================
 // GRANTS ROUTES
 // ===============================
-app.get("/api/grants/test", (req, res) => {
-  res.json({
-    message: "Grants routes working!",
-    endpoint: "/api/grants/test",
-  });
-});
-
-app.get("/api/grants/user/:userId", (req, res) => {
-  res.json({
-    message: "Get grants - Coming soon!",
-    userId: req.params.userId,
-    endpoint: "/api/grants/user/:userId",
-  });
-});
+app.use("/api/grants", grantRoutes);
 
 // ===============================
 // MEDIA ROUTES

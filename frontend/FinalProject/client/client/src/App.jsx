@@ -1,6 +1,6 @@
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Navbar from './components/Navbar';
-import Profile from './components/Profile';
+import UserProfilePage from './components/UserProfilePage';
 import Publications from './components/Publications';
 import Login from './pages/Login';
 import Register from './pages/Register';
@@ -23,7 +23,7 @@ function App() {
     <Router>
       <Navbar />
         <Routes>
-          <Route path="/" element={<Profile />} />
+          <Route path="/" element={<UserProfilePage />} />
           <Route path="/Navbar" element={<Navbar />} />
           <Route path="/publications" element={<Publications />} />
           <Route path="/projects" element={<Projects />} />

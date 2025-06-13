@@ -1,7 +1,7 @@
-import './Profile.css';
-import { useState } from 'react';
+import './UserProfilePage.css';
+import { useState, useEffect } from 'react';
 
-const defaultUser = {
+const fallbackUser = {
   name: "Dr. Ayesha Khan",
   email: "ayesha.khan@university.edu",
   title: "Assistant Professor",
@@ -41,10 +41,34 @@ const defaultUser = {
 };
 
 export default function UserProfilePage() {
-  const [user, setUser] = useState(defaultUser);
+  const [user, setUser] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    // Replace this URL with your actual backend endpoint
+    fetch('/api/user/profile')  // Example: `/api/users/me` or `/api/users/:id`
+      .then(res => {
+        if (!res.ok) throw new Error("Failed to fetch user data");
+        return res.json();
+      })
+      .then(data => {
+        setUser(data);
+        setLoading(false);
+      })
+      .catch(err => {
+        console.error("Error loading user data:", err);
+        setUser(fallbackUser); // Use hardcoded fallback if needed
+        setError("Could not load profile, showing fallback data.");
+        setLoading(false);
+      });
+  }, []);
+
+  if (loading) return <p>Loading user profile...</p>;
 
   return (
     <div className="user-profile">
+      {error && <p className="error-message">{error}</p>}
       <div className="user-header">
         <img src={user.profileImage} alt="Profile" className="profile-img" />
         <div className="user-info">
@@ -61,12 +85,12 @@ export default function UserProfilePage() {
 
       <div className="user-section">
         <h3>Academic Interests</h3>
-        <ul>{user.researchInterests.map((item, i) => <li key={i}>{item}</li>)}</ul>
+        <ul>{user.researchInterests?.map((item, i) => <li key={i}>{item}</li>)}</ul>
       </div>
 
       <div className="user-section">
         <h3>Education</h3>
-        <ul>{user.education.map((edu, i) => <li key={i}>{edu}</li>)}</ul>
+        <ul>{user.education?.map((edu, i) => <li key={i}>{edu}</li>)}</ul>
       </div>
 
       <div className="user-section">
@@ -82,7 +106,7 @@ export default function UserProfilePage() {
 
       <div className="user-section">
         <h3>Uploads</h3>
-        <p><strong>CV:</strong> <a href={user.cv} target="_blank">Download</a></p>
+        <p><strong>CV:</strong> <a href={user.cv} target="_blank" rel="noopener noreferrer">Download</a></p>
       </div>
 
       <div className="user-section">

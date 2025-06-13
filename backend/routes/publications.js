@@ -1,46 +1,83 @@
 const express = require("express");
 const router = express.Router();
+const Publication = require("../models/Publication");
 
-// @desc    Test publications route
+// ===============================
 // @route   GET /api/publications/test
-// @access  Public
+// @desc    Test route
+// ===============================
 router.get("/test", (req, res) => {
-  res.json({ message: "Publications routes working!" });
+  res.json({ message: "✅ Publications route working!" });
 });
 
-// @desc    Get all publications for a user
-// @route   GET /api/publications/user/:userId
-// @access  Public
-router.get("/user/:userId", (req, res) => {
-  res.json({ message: "Get user publications - Coming soon!" });
-});
-
-// @desc    Get single publication
-// @route   GET /api/publications/:id
-// @access  Public
-router.get("/:id", (req, res) => {
-  res.json({ message: "Get single publication - Coming soon!" });
-});
-
-// @desc    Create new publication
+// ===============================
 // @route   POST /api/publications
-// @access  Private
-router.post("/", (req, res) => {
-  res.json({ message: "Create publication - Coming soon!" });
+// @desc    Create a publication
+// ===============================
+router.post("/", async (req, res) => {
+  try {
+    const pub = new Publication(req.body);
+    const saved = await pub.save();
+    res.status(201).json(saved);
+  } catch (err) {
+    res
+      .status(400)
+      .json({ error: "Failed to create publication", details: err.message });
+  }
 });
 
-// @desc    Update publication
+// ===============================
+// @route   GET /api/publications/user/:userId
+// @desc    Get all publications for a user
+// ===============================
+router.get("/user/:userId", async (req, res) => {
+  try {
+    const pubs = await Publication.find({ user: req.params.userId }).sort({
+      publicationDate: -1,
+    });
+    res.status(200).json(pubs);
+  } catch (err) {
+    res.status(500).json({ error: "Failed to fetch publications" });
+  }
+});
+
+// ===============================
 // @route   PUT /api/publications/:id
-// @access  Private
-router.put("/:id", (req, res) => {
-  res.json({ message: "Update publication - Coming soon!" });
+// @desc    Update a publication
+// ===============================
+router.put("/:id", async (req, res) => {
+  try {
+    const updated = await Publication.findByIdAndUpdate(
+      req.params.id,
+      req.body,
+      {
+        new: true,
+        runValidators: true,
+      }
+    );
+    if (!updated)
+      return res.status(404).json({ error: "Publication not found" });
+    res.status(200).json(updated);
+  } catch (err) {
+    res
+      .status(400)
+      .json({ error: "Failed to update publication", details: err.message });
+  }
 });
 
-// @desc    Delete publication
+// ===============================
 // @route   DELETE /api/publications/:id
-// @access  Private
-router.delete("/:id", (req, res) => {
-  res.json({ message: "Delete publication - Coming soon!" });
+// @desc    Delete a publication
+// ===============================
+router.delete("/:id", async (req, res) => {
+  try {
+    const deleted = await Publication.findByIdAndDelete(req.params.id);
+    if (!deleted)
+      return res.status(404).json({ error: "Publication not found" });
+    res.status(200).json({ message: "Publication deleted" });
+  } catch (err) {
+    res.status(500).json({ error: "Failed to delete publication" });
+  }
 });
 
 module.exports = router;

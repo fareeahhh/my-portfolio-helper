@@ -9,7 +9,7 @@ require("dotenv").config();
 // Import the models
 const authRoutes = require("./routes/auth");
 const userRoutes = require("./routes/users");
-const publicationRoutes = require("./routes/users");
+const publicationRoutes = require("./routes/publications");
 const projectRoutes = require("./routes/projects");
 const teachingRoutes = require("./routes/teaching");
 const presentationRoutes = require("./routes/presentations");
@@ -17,6 +17,7 @@ const grantRoutes = require("./routes/grants");
 const mediaRoutes = require("./routes/media");
 const galleryRoutes = require("./routes/gallery");
 const analyticsRoutes = require("./routes/analytics");
+const blogRoutes = require("./routes/blog");
 
 const app = express();
 
@@ -138,7 +139,7 @@ app.use("/api/analytics", analyticsRoutes);
 // ===============================
 // BLOG ROUTES
 // ===============================
-app.use("/api/blogs", blogRoutes);
+app.use("/api/blog", blogRoutes);
 
 // 404 handler
 app.use("*", (req, res) => {
@@ -178,7 +179,7 @@ app.listen(PORT, () => {
   console.log(`\n📋 Quick Test URLs:`);
   console.log(`   🏠 Root:        http://localhost:${PORT}/`);
   console.log(`   ❤️  Health:      http://localhost:${PORT}/api/health`);
-  console.log(`   🔐 Auth:        http://localhost:${PORT}/api/auth/test`);
+  // console.log(`   🔐 Auth:        http://localhost:${PORT}/api/auth/test`);
   console.log(`   👥 Users:       http://localhost:${PORT}/api/users/test`);
   console.log(
     `   📚 Publications: http://localhost:${PORT}/api/publications/test`

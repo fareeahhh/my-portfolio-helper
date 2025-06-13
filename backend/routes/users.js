@@ -11,7 +11,7 @@ const JWT_SECRET = process.env.JWT_SECRET || "dev_secret";
 // @desc    Test route
 // =========================
 router.get("/test", (req, res) => {
-  res.json({ message: "Users routes working!" });
+  res.json({ message: "✅ Users route working!" });
 });
 
 // =========================

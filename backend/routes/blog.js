@@ -1,86 +1,77 @@
 const express = require("express");
 const router = express.Router();
+const Blog = require("../models/Blog");
 
-// @desc    Test blog route
+// ===============================
 // @route   GET /api/blog/test
-// @access  Public
+// @desc    Test route
+// ===============================
 router.get("/test", (req, res) => {
-  res.json({ message: "Blog routes working!" });
+  res.json({ message: "✅ Blog route working!" });
 });
 
-// SPECIFIC ROUTES FIRST (before parameterized routes)
-
-// @desc    Get all blog posts for a user
-// @route   GET /api/blog/user/:userId
-// @access  Public
-router.get("/user/:userId", (req, res) => {
-  res.json({ message: "Get user blog posts - Coming soon!" });
-});
-
-// @desc    Get published blog posts
-// @route   GET /api/blog/published/:userId
-// @access  Public
-router.get("/published/:userId", (req, res) => {
-  res.json({ message: "Get published blog posts - Coming soon!" });
-});
-
-// @desc    Get draft blog posts
-// @route   GET /api/blog/drafts/:userId
-// @access  Private (owner only)
-router.get("/drafts/:userId", (req, res) => {
-  res.json({ message: "Get draft blog posts - Coming soon!" });
-});
-
-// @desc    Get blog posts by category/tag
-// @route   GET /api/blog/category/:userId/:category
-// @access  Public
-router.get("/category/:userId/:category", (req, res) => {
-  res.json({ message: "Get blog posts by category - Coming soon!" });
-});
-
-// PARAMETERIZED ROUTES LAST
-
-// @desc    Get single blog post
-// @route   GET /api/blog/:id
-// @access  Public
-router.get("/:id", (req, res) => {
-  res.json({ message: "Get single blog post - Coming soon!" });
-});
-
-// POST, PUT, DELETE routes
-// @desc    Create new blog post
+// ===============================
 // @route   POST /api/blog
-// @access  Private
-router.post("/", (req, res) => {
-  res.json({ message: "Create blog post - Coming soon!" });
+// @desc    Create a blog
+// ===============================
+router.post("/", async (req, res) => {
+  try {
+    const blog = new Blog(req.body);
+    const saved = await blog.save();
+    res.status(201).json(saved);
+  } catch (err) {
+    res
+      .status(400)
+      .json({ error: "Failed to create blog", details: err.message });
+  }
 });
 
-// @desc    Update blog post
+// ===============================
+// @route   GET /api/blog/user/:userId
+// @desc    Get all blogs by a user
+// ===============================
+router.get("/user/:userId", async (req, res) => {
+  try {
+    const blogs = await Blog.find({ user: req.params.userId }).sort({
+      createdAt: -1,
+    });
+    res.status(200).json(blogs);
+  } catch (err) {
+    res.status(500).json({ error: "Failed to fetch blogs" });
+  }
+});
+
+// ===============================
 // @route   PUT /api/blog/:id
-// @access  Private
-router.put("/:id", (req, res) => {
-  res.json({ message: "Update blog post - Coming soon!" });
+// @desc    Update a blog
+// ===============================
+router.put("/:id", async (req, res) => {
+  try {
+    const updated = await Blog.findByIdAndUpdate(req.params.id, req.body, {
+      new: true,
+      runValidators: true,
+    });
+    if (!updated) return res.status(404).json({ error: "Blog not found" });
+    res.status(200).json(updated);
+  } catch (err) {
+    res
+      .status(400)
+      .json({ error: "Failed to update blog", details: err.message });
+  }
 });
 
-// @desc    Delete blog post
+// ===============================
 // @route   DELETE /api/blog/:id
-// @access  Private
-router.delete("/:id", (req, res) => {
-  res.json({ message: "Delete blog post - Coming soon!" });
-});
-
-// @desc    Add comment to blog post
-// @route   POST /api/blog/:id/comments
-// @access  Public
-router.post("/:id/comments", (req, res) => {
-  res.json({ message: "Add comment - Coming soon!" });
-});
-
-// @desc    Like/Unlike blog post
-// @route   POST /api/blog/:id/like
-// @access  Public
-router.post("/:id/like", (req, res) => {
-  res.json({ message: "Like/Unlike blog post - Coming soon!" });
+// @desc    Delete a blog
+// ===============================
+router.delete("/:id", async (req, res) => {
+  try {
+    const deleted = await Blog.findByIdAndDelete(req.params.id);
+    if (!deleted) return res.status(404).json({ error: "Blog not found" });
+    res.status(200).json({ message: "Blog deleted" });
+  } catch (err) {
+    res.status(500).json({ error: "Failed to delete blog" });
+  }
 });
 
 module.exports = router;

@@ -1,71 +1,55 @@
 const express = require("express");
 const router = express.Router();
+const Analytics = require("../models/Analytics");
 
-// @desc    Test analytics route
+// @desc    Test route
 // @route   GET /api/analytics/test
 // @access  Public
 router.get("/test", (req, res) => {
-  res.json({ message: "Analytics routes working!" });
+  res.json({ message: "✅ Analytics route working!" });
 });
 
-// SPECIFIC ROUTES FIRST
-
-// @desc    Track portfolio view
-// @route   POST /api/analytics/track/view
+// @desc    Get all analytics entries for a user
+// @route   GET /api/analytics/user/:userId
 // @access  Public
-router.post("/track/view", (req, res) => {
-  res.json({ message: "Track portfolio view - Coming soon!" });
+router.get("/user/:userId", async (req, res) => {
+  try {
+    const data = await Analytics.find({ user: req.params.userId }).sort({
+      timestamp: -1,
+    });
+    res.status(200).json(data);
+  } catch (error) {
+    res.status(500).json({ error: "Failed to fetch analytics" });
+  }
 });
 
-// @desc    Track section view
-// @route   POST /api/analytics/track/section
+// @desc    Log new analytics event
+// @route   POST /api/analytics
 // @access  Public
-router.post("/track/section", (req, res) => {
-  res.json({ message: "Track section view - Coming soon!" });
+router.post("/", async (req, res) => {
+  try {
+    const record = new Analytics(req.body);
+    const saved = await record.save();
+    res.status(201).json(saved);
+  } catch (error) {
+    res
+      .status(400)
+      .json({ error: "Failed to record analytics", details: error.message });
+  }
 });
 
-// @desc    Track download
-// @route   POST /api/analytics/track/download
-// @access  Public
-router.post("/track/download", (req, res) => {
-  res.json({ message: "Track download - Coming soon!" });
-});
-
-// @desc    Get view statistics by date range
-// @route   GET /api/analytics/views/:userId
-// @access  Private (owner only)
-router.get("/views/:userId", (req, res) => {
-  res.json({ message: "Get view statistics - Coming soon!" });
-});
-
-// @desc    Get section popularity
-// @route   GET /api/analytics/sections/:userId
-// @access  Private (owner only)
-router.get("/sections/:userId", (req, res) => {
-  res.json({ message: "Get section popularity - Coming soon!" });
-});
-
-// @desc    Get visitor demographics
-// @route   GET /api/analytics/demographics/:userId
-// @access  Private (owner only)
-router.get("/demographics/:userId", (req, res) => {
-  res.json({ message: "Get visitor demographics - Coming soon!" });
-});
-
-// @desc    Export analytics data
-// @route   GET /api/analytics/export/:userId
-// @access  Private (owner only)
-router.get("/export/:userId", (req, res) => {
-  res.json({ message: "Export analytics data - Coming soon!" });
-});
-
-// PARAMETERIZED ROUTES LAST
-
-// @desc    Get user analytics dashboard
-// @route   GET /api/analytics/:userId
-// @access  Private (owner only)
-router.get("/:userId", (req, res) => {
-  res.json({ message: "Get user analytics - Coming soon!" });
+// @desc    Delete an analytics record
+// @route   DELETE /api/analytics/:id
+// @access  Private
+router.delete("/:id", async (req, res) => {
+  try {
+    const deleted = await Analytics.findByIdAndDelete(req.params.id);
+    if (!deleted)
+      return res.status(404).json({ error: "Analytics record not found" });
+    res.status(200).json({ message: "Analytics record deleted" });
+  } catch (error) {
+    res.status(500).json({ error: "Failed to delete analytics" });
+  }
 });
 
 module.exports = router;

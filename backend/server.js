@@ -11,6 +11,7 @@ const User = require("./models/User");
 const Publication = require("./models/Publication");
 const projectRoutes = require("./routes/projects");
 const teachingRoutes = require("./routes/teaching");
+const presentationRoutes = require("./routes/presentations");
 
 const app = express();
 
@@ -231,20 +232,7 @@ app.use("/api/teaching", teachingRoutes);
 // ===============================
 // PRESENTATIONS ROUTES
 // ===============================
-app.get("/api/presentations/test", (req, res) => {
-  res.json({
-    message: "Presentations routes working!",
-    endpoint: "/api/presentations/test",
-  });
-});
-
-app.get("/api/presentations/user/:userId", (req, res) => {
-  res.json({
-    message: "Get presentations - Coming soon!",
-    userId: req.params.userId,
-    endpoint: "/api/presentations/user/:userId",
-  });
-});
+app.use("/api/presentations", presentationRoutes);
 
 // ===============================
 // GRANTS ROUTES

@@ -1,72 +1,87 @@
 const express = require("express");
 const router = express.Router();
+const Media = require("../models/Media");
 
-// @desc    Test media route
+// @desc    Test route
 // @route   GET /api/media/test
 // @access  Public
 router.get("/test", (req, res) => {
-  res.json({ message: "Media routes working!" });
+  res.json({ message: "✅ Media route working!" });
 });
 
-// SPECIFIC ROUTES FIRST
-
-// @desc    Get all media coverage for a user
+// @desc    Get all media entries for a user
 // @route   GET /api/media/user/:userId
 // @access  Public
-router.get("/user/:userId", (req, res) => {
-  res.json({ message: "Get media coverage - Coming soon!" });
+router.get("/user/:userId", async (req, res) => {
+  try {
+    const mediaItems = await Media.find({ user: req.params.userId }).sort({
+      publishDate: -1,
+    });
+    res.status(200).json(mediaItems);
+  } catch (error) {
+    res.status(500).json({ error: "Failed to fetch media entries" });
+  }
 });
-
-// @desc    Get media by type (article, interview, podcast, video)
-// @route   GET /api/media/type/:userId/:type
-// @access  Public
-router.get("/type/:userId/:type", (req, res) => {
-  res.json({ message: "Get media by type - Coming soon!" });
-});
-
-// @desc    Get featured media
-// @route   GET /api/media/featured/:userId
-// @access  Public
-router.get("/featured/:userId", (req, res) => {
-  res.json({ message: "Get featured media - Coming soon!" });
-});
-
-// PARAMETERIZED ROUTES LAST
 
 // @desc    Get single media item
 // @route   GET /api/media/:id
 // @access  Public
-router.get("/:id", (req, res) => {
-  res.json({ message: "Get single media item - Coming soon!" });
+router.get("/:id", async (req, res) => {
+  try {
+    const item = await Media.findById(req.params.id);
+    if (!item) return res.status(404).json({ error: "Media item not found" });
+    res.status(200).json(item);
+  } catch (error) {
+    res.status(500).json({ error: "Failed to fetch media item" });
+  }
 });
 
-// POST, PUT, DELETE routes
-// @desc    Add new media coverage
+// @desc    Create new media item
 // @route   POST /api/media
 // @access  Private
-router.post("/", (req, res) => {
-  res.json({ message: "Add media coverage - Coming soon!" });
+router.post("/", async (req, res) => {
+  try {
+    const media = new Media(req.body);
+    const saved = await media.save();
+    res.status(201).json(saved);
+  } catch (error) {
+    res
+      .status(400)
+      .json({ error: "Failed to create media item", details: error.message });
+  }
 });
 
-// @desc    Update media coverage
+// @desc    Update media item
 // @route   PUT /api/media/:id
 // @access  Private
-router.put("/:id", (req, res) => {
-  res.json({ message: "Update media coverage - Coming soon!" });
+router.put("/:id", async (req, res) => {
+  try {
+    const updated = await Media.findByIdAndUpdate(req.params.id, req.body, {
+      new: true,
+      runValidators: true,
+    });
+    if (!updated)
+      return res.status(404).json({ error: "Media item not found" });
+    res.status(200).json(updated);
+  } catch (error) {
+    res
+      .status(400)
+      .json({ error: "Failed to update media item", details: error.message });
+  }
 });
 
-// @desc    Delete media coverage
+// @desc    Delete media item
 // @route   DELETE /api/media/:id
 // @access  Private
-router.delete("/:id", (req, res) => {
-  res.json({ message: "Delete media coverage - Coming soon!" });
-});
-
-// @desc    Upload media files
-// @route   POST /api/media/:id/files
-// @access  Private
-router.post("/:id/files", (req, res) => {
-  res.json({ message: "Upload media files - Coming soon!" });
+router.delete("/:id", async (req, res) => {
+  try {
+    const deleted = await Media.findByIdAndDelete(req.params.id);
+    if (!deleted)
+      return res.status(404).json({ error: "Media item not found" });
+    res.status(200).json({ message: "Media item deleted" });
+  } catch (error) {
+    res.status(500).json({ error: "Failed to delete media item" });
+  }
 });
 
 module.exports = router;

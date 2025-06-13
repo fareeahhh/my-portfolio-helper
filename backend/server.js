@@ -14,6 +14,7 @@ const teachingRoutes = require("./routes/teaching");
 const presentationRoutes = require("./routes/presentations");
 const grantRoutes = require("./routes/grants");
 const mediaRoutes = require("./routes/media");
+const galleryRoutes = require("./routes/gallery");
 
 const app = express();
 
@@ -249,20 +250,7 @@ app.use("/api/media", mediaRoutes);
 // ===============================
 // GALLERY ROUTES
 // ===============================
-app.get("/api/gallery/test", (req, res) => {
-  res.json({
-    message: "Gallery routes working!",
-    endpoint: "/api/gallery/test",
-  });
-});
-
-app.get("/api/gallery/user/:userId", (req, res) => {
-  res.json({
-    message: "Get gallery images - Coming soon!",
-    userId: req.params.userId,
-    endpoint: "/api/gallery/user/:userId",
-  });
-});
+app.use("/api/gallery", galleryRoutes);
 
 // ===============================
 // ANALYTICS ROUTES

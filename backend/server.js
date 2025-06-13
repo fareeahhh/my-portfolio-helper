@@ -6,11 +6,10 @@ const morgan = require("morgan");
 const rateLimit = require("express-rate-limit");
 require("dotenv").config();
 
-// Import the User model
-// fjdijjfkds
+// Import the models
 const User = require("./models/User");
-// Import the Publication model
 const Publication = require("./models/Publication");
+const projectRoutes = require("./routes/projects");
 
 const app = express();
 
@@ -221,54 +220,56 @@ app.delete("/api/publications/:id", (req, res) => {
 // ===============================
 // PROJECTS ROUTES
 // ===============================
-app.get("/api/projects/test", (req, res) => {
-  res.json({
-    message: "Projects routes working!",
-    endpoint: "/api/projects/test",
-  });
-});
+// app.get("/api/projects/test", (req, res) => {
+//   res.json({
+//     message: "Projects routes working!",
+//     endpoint: "/api/projects/test",
+//   });
+// });
 
-app.get("/api/projects/user/:userId", (req, res) => {
-  res.json({
-    message: "Get user projects - Coming soon!",
-    userId: req.params.userId,
-    endpoint: "/api/projects/user/:userId",
-  });
-});
+// app.get("/api/projects/user/:userId", (req, res) => {
+//   res.json({
+//     message: "Get user projects - Coming soon!",
+//     userId: req.params.userId,
+//     endpoint: "/api/projects/user/:userId",
+//   });
+// });
 
-app.get("/api/projects/:id", (req, res) => {
-  res.json({
-    message: "Get single project - Coming soon!",
-    projectId: req.params.id,
-    endpoint: "/api/projects/:id",
-  });
-});
+// app.get("/api/projects/:id", (req, res) => {
+//   res.json({
+//     message: "Get single project - Coming soon!",
+//     projectId: req.params.id,
+//     endpoint: "/api/projects/:id",
+//   });
+// });
 
-app.post("/api/projects", (req, res) => {
-  res.json({
-    message: "Create project - Coming soon!",
-    endpoint: "/api/projects",
-    method: "POST",
-  });
-});
+// app.post("/api/projects", (req, res) => {
+//   res.json({
+//     message: "Create project - Coming soon!",
+//     endpoint: "/api/projects",
+//     method: "POST",
+//   });
+// });
 
-app.put("/api/projects/:id", (req, res) => {
-  res.json({
-    message: "Update project - Coming soon!",
-    projectId: req.params.id,
-    endpoint: "/api/projects/:id",
-    method: "PUT",
-  });
-});
+// app.put("/api/projects/:id", (req, res) => {
+//   res.json({
+//     message: "Update project - Coming soon!",
+//     projectId: req.params.id,
+//     endpoint: "/api/projects/:id",
+//     method: "PUT",
+//   });
+// });
 
-app.delete("/api/projects/:id", (req, res) => {
-  res.json({
-    message: "Delete project - Coming soon!",
-    projectId: req.params.id,
-    endpoint: "/api/projects/:id",
-    method: "DELETE",
-  });
-});
+// app.delete("/api/projects/:id", (req, res) => {
+//   res.json({
+//     message: "Delete project - Coming soon!",
+//     projectId: req.params.id,
+//     endpoint: "/api/projects/:id",
+//     method: "DELETE",
+//   });
+// });
+
+app.use("/api/projects", projectRoutes);
 
 // ===============================
 // TEACHING ROUTES

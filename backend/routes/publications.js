@@ -1,6 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const Publication = require("../models/Publication");
+const authenticate = require("../middleware/auth"); // Make sure this is used
 
 // ===============================
 // @route   GET /api/publications/test
@@ -14,15 +15,32 @@ router.get("/test", (req, res) => {
 // @route   POST /api/publications
 // @desc    Create a publication
 // ===============================
-router.post("/", async (req, res) => {
+router.post("/", authenticate, async (req, res) => {
   try {
-    const pub = new Publication(req.body);
-    const saved = await pub.save();
-    res.status(201).json(saved);
+    const newPub = new Publication({
+      ...req.body,
+      user: req.user.userId, // 🔥 Attach the authenticated user's ID
+    });
+
+    await newPub.save();
+    res.status(201).json(newPub);
   } catch (err) {
+    console.error("Failed to create publication:", err);
     res
       .status(400)
       .json({ error: "Failed to create publication", details: err.message });
+  }
+});
+
+router.get("/", authenticate, async (req, res) => {
+  try {
+    const pubs = await Publication.find({ user: req.user.userId }).sort({
+      createdAt: -1,
+    });
+    res.json(pubs);
+  } catch (err) {
+    console.error("Failed to fetch publications:", err);
+    res.status(500).json({ error: "Could not load publications" });
   }
 });
 

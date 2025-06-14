@@ -1,5 +1,6 @@
-import './UserProfilePage.css';
-import { useState, useEffect } from 'react';
+import "./UserProfilePage.css";
+import { useState, useEffect } from "react";
+import { getUserProfile } from "../services/api";
 
 const fallbackUser = {
   name: "Dr. Ayesha Khan",
@@ -18,7 +19,7 @@ const fallbackUser = {
   education: [
     "PhD in AI – MIT (2020)",
     "MS in Computer Vision – FAST (2016)",
-    "BS in Computer Science – NUST (2014)"
+    "BS in Computer Science – NUST (2014)",
   ],
   linkedin: "https://linkedin.com/in/ayeshakhan",
   orcid: "https://orcid.org/0000-0002-1825-0097",
@@ -31,13 +32,13 @@ const fallbackUser = {
   sectionsVisibility: {
     education: true,
     interests: true,
-    contact: false
+    contact: false,
   },
   profileCompleteness: 88,
   profileSlug: "ayesha-khan",
   createdAt: "2024-01-01",
   updatedAt: "2025-05-20",
-  lastLogin: "2025-06-10"
+  lastLogin: "2025-06-10",
 };
 
 export default function UserProfilePage() {
@@ -46,19 +47,14 @@ export default function UserProfilePage() {
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    // Replace this URL with your actual backend endpoint
-    fetch('/api/user/profile')  // Example: `/api/users/me` or `/api/users/:id`
-      .then(res => {
-        if (!res.ok) throw new Error("Failed to fetch user data");
-        return res.json();
-      })
-      .then(data => {
-        setUser(data);
+    getUserProfile()
+      .then((res) => {
+        setUser(res.data);
         setLoading(false);
       })
-      .catch(err => {
+      .catch((err) => {
         console.error("Error loading user data:", err);
-        setUser(fallbackUser); // Use hardcoded fallback if needed
+        setUser(fallbackUser); // fallback if backend fails
         setError("Could not load profile, showing fallback data.");
         setLoading(false);
       });
@@ -89,8 +85,8 @@ export default function UserProfilePage() {
           </div>
         </div>
       )}
-      
-      {/* Enhanced Header Card */}
+
+      {/* ---- BEGIN PROFILE HEADER ---- */}
       <div className="user-header">
         <div className="header-background">
           <div className="background-pattern"></div>
@@ -104,12 +100,16 @@ export default function UserProfilePage() {
           <div className="profile-section">
             <div className="profile-img-container">
               <div className="profile-ring"></div>
-              <img src={user.profileImage} alt="Profile" className="profile-img" />
+              <img
+                src={user.profileImage}
+                alt="Profile"
+                className="profile-img"
+              />
               <div className="status-indicator">
                 <div className="status-dot"></div>
               </div>
             </div>
-            
+
             <div className="user-info">
               <div className="name-section">
                 <h2 className="user-name">{user.name}</h2>
@@ -117,7 +117,7 @@ export default function UserProfilePage() {
               </div>
               <p className="user-title">{user.title}</p>
               <p className="user-position">{user.currentPosition}</p>
-              
+
               <div className="user-meta">
                 <div className="meta-item">
                   <div className="meta-icon">📍</div>
@@ -129,27 +129,33 @@ export default function UserProfilePage() {
                 </div>
                 <div className="meta-item">
                   <div className="meta-icon">⚡</div>
-                  <span>Last active: {new Date(user.lastLogin).toLocaleDateString()}</span>
+                  <span>
+                    Last active: {new Date(user.lastLogin).toLocaleDateString()}
+                  </span>
                 </div>
               </div>
-              
+
               <p className="user-bio">{user.bio}</p>
-              
+
               <div className="progress-container">
                 <div className="progress-badge">
                   <div className="badge-icon">🏆</div>
-                  <span className="badge-text">Profile {user.profileCompleteness}% Complete</span>
+                  <span className="badge-text">
+                    Profile {user.profileCompleteness}% Complete
+                  </span>
                 </div>
                 <div className="progress-bar">
                   <div className="progress-track">
-                    <div 
-                      className="progress-fill" 
+                    <div
+                      className="progress-fill"
                       style={{ width: `${user.profileCompleteness}%` }}
                     >
                       <div className="progress-glow"></div>
                     </div>
                   </div>
-                  <div className="progress-percentage">{user.profileCompleteness}%</div>
+                  <div className="progress-percentage">
+                    {user.profileCompleteness}%
+                  </div>
                 </div>
               </div>
             </div>
@@ -157,11 +163,10 @@ export default function UserProfilePage() {
         </div>
       </div>
 
-      {/* Enhanced Content Grid */}
+      {/* ---- BEGIN CONTENT GRID ---- */}
       <div className="content-grid">
-        {/* Left Column */}
+        {/* LEFT COLUMN */}
         <div className="main-content">
-          {/* Enhanced Research Interests */}
           <div className="user-section interests-section">
             <div className="section-header">
               <div className="section-icon interests">
@@ -183,7 +188,6 @@ export default function UserProfilePage() {
             </div>
           </div>
 
-          {/* Enhanced Education */}
           <div className="user-section education-section">
             <div className="section-header">
               <div className="section-icon education">
@@ -191,7 +195,9 @@ export default function UserProfilePage() {
               </div>
               <div className="section-title">
                 <h3>Educational Journey</h3>
-                <p className="section-subtitle">Building knowledge step by step</p>
+                <p className="section-subtitle">
+                  Building knowledge step by step
+                </p>
               </div>
             </div>
             <div className="education-timeline">
@@ -211,9 +217,8 @@ export default function UserProfilePage() {
           </div>
         </div>
 
-        {/* Right Column */}
+        {/* RIGHT COLUMN */}
         <div className="sidebar-content">
-          {/* Enhanced Social Links */}
           <div className="user-section social-section">
             <div className="section-header">
               <div className="section-icon social">
@@ -225,35 +230,44 @@ export default function UserProfilePage() {
               </div>
             </div>
             <div className="social-links">
-              <a href={user.linkedin} target="_blank" rel="noopener noreferrer" className="social-link linkedin">
-                <div className="social-icon">💼</div>
-                <span className="social-text">LinkedIn</span>
-                <div className="social-arrow">→</div>
+              <a
+                href={user.linkedin}
+                className="social-link linkedin"
+                target="_blank"
+              >
+                💼 LinkedIn
               </a>
-              <a href={user.orcid} target="_blank" rel="noopener noreferrer" className="social-link orcid">
-                <div className="social-icon">🆔</div>
-                <span className="social-text">ORCID</span>
-                <div className="social-arrow">→</div>
+              <a
+                href={user.orcid}
+                className="social-link orcid"
+                target="_blank"
+              >
+                🆔 ORCID
               </a>
-              <a href={user.researchGate} target="_blank" rel="noopener noreferrer" className="social-link researchgate">
-                <div className="social-icon">🔬</div>
-                <span className="social-text">ResearchGate</span>
-                <div className="social-arrow">→</div>
+              <a
+                href={user.researchGate}
+                className="social-link researchgate"
+                target="_blank"
+              >
+                🔬 ResearchGate
               </a>
-              <a href={user.googleScholar} target="_blank" rel="noopener noreferrer" className="social-link scholar">
-                <div className="social-icon">📚</div>
-                <span className="social-text">Google Scholar</span>
-                <div className="social-arrow">→</div>
+              <a
+                href={user.googleScholar}
+                className="social-link scholar"
+                target="_blank"
+              >
+                📚 Google Scholar
               </a>
-              <a href={user.twitter} target="_blank" rel="noopener noreferrer" className="social-link twitter">
-                <div className="social-icon">🐦</div>
-                <span className="social-text">Twitter</span>
-                <div className="social-arrow">→</div>
+              <a
+                href={user.twitter}
+                className="social-link twitter"
+                target="_blank"
+              >
+                🐦 Twitter
               </a>
             </div>
           </div>
 
-          {/* Enhanced Documents */}
           <div className="user-section documents-section">
             <div className="section-header">
               <div className="section-icon documents">
@@ -264,83 +278,9 @@ export default function UserProfilePage() {
                 <p className="section-subtitle">Professional resources</p>
               </div>
             </div>
-            <a href={user.cv} target="_blank" rel="noopener noreferrer" className="document-card">
-              <div className="document-visual">
-                <div className="document-icon">
-                  <span>📄</span>
-                </div>
-                <div className="document-preview">
-                  <div className="preview-line"></div>
-                  <div className="preview-line short"></div>
-                  <div className="preview-line"></div>
-                </div>
-              </div>
-              <div className="document-info">
-                <h4 className="document-title">Curriculum Vitae</h4>
-                <p className="document-meta">PDF Document • Updated recently</p>
-                <div className="download-indicator">
-                  <span>Download</span>
-                  <div className="download-arrow">⬇</div>
-                </div>
-              </div>
-              <div className="document-glow"></div>
+            <a href={user.cv} className="document-card" target="_blank">
+              📄 Curriculum Vitae
             </a>
-          </div>
-
-          {/* Enhanced Privacy Settings */}
-          <div className="user-section privacy-section">
-            <div className="section-header">
-              <div className="section-icon privacy">
-                <span className="icon-emoji">🛡️</span>
-              </div>
-              <div className="section-title">
-                <h3>Privacy Settings</h3>
-                <p className="section-subtitle">Your data, your control</p>
-              </div>
-            </div>
-            <div className="privacy-list">
-              <div className="privacy-item">
-                <div className="privacy-info">
-                  <div className="privacy-icon">✉️</div>
-                  <div className="privacy-label">
-                    <span className="privacy-name">Email Visibility</span>
-                    <span className="privacy-desc">Show email to visitors</span>
-                  </div>
-                </div>
-                <div className={`privacy-toggle ${user.showEmail ? 'enabled' : 'disabled'}`}>
-                  <div className="toggle-icon">{user.showEmail ? '👁️' : '🙈'}</div>
-                  <span className="toggle-text">{user.showEmail ? "Visible" : "Hidden"}</span>
-                </div>
-              </div>
-              
-              <div className="privacy-item">
-                <div className="privacy-info">
-                  <div className="privacy-icon">📞</div>
-                  <div className="privacy-label">
-                    <span className="privacy-name">Phone Visibility</span>
-                    <span className="privacy-desc">Show phone to visitors</span>
-                  </div>
-                </div>
-                <div className={`privacy-toggle ${user.showPhone ? 'enabled' : 'disabled'}`}>
-                  <div className="toggle-icon">{user.showPhone ? '👁️' : '🙈'}</div>
-                  <span className="toggle-text">{user.showPhone ? "Visible" : "Hidden"}</span>
-                </div>
-              </div>
-              
-              <div className="privacy-item">
-                <div className="privacy-info">
-                  <div className="privacy-icon">👤</div>
-                  <div className="privacy-label">
-                    <span className="privacy-name">Profile Visibility</span>
-                    <span className="privacy-desc">Make profile discoverable</span>
-                  </div>
-                </div>
-                <div className={`privacy-toggle ${user.profileVisibility ? 'enabled' : 'disabled'}`}>
-                  <div className="toggle-icon">{user.profileVisibility ? '🌐' : '🔒'}</div>
-                  <span className="toggle-text">{user.profileVisibility ? "Public" : "Private"}</span>
-                </div>
-              </div>
-            </div>
           </div>
         </div>
       </div>

@@ -1,4 +1,3 @@
-
 import { useState } from 'react';
 import './Teaching.css';
 
@@ -57,6 +56,7 @@ function Teaching() {
 
   const [editing, setEditing] = useState(null);
   const [feedbackMsg, setFeedbackMsg] = useState('');
+  const [showForm, setShowForm] = useState(false);
 
   const handleInput = (e) => {
     const { name, value, type, checked } = e.target;
@@ -91,11 +91,11 @@ function Teaching() {
 
     if (editing) {
       setCourses(courses.map((c) => (c._id === editing._id ? courseData : c)));
-      setFeedbackMsg('Course updated!');
+      setFeedbackMsg('Course updated successfully!');
       setEditing(null);
     } else {
       setCourses([...courses, courseData]);
-      setFeedbackMsg('Course added!');
+      setFeedbackMsg('Course added successfully!');
     }
 
     setNewCourse({
@@ -103,6 +103,7 @@ function Teaching() {
       university: '', department: '', syllabus: '', slides: '', assignments: '', studentRatings: '', feedback: '',
       description: '', learningObjectives: '', topics: '', materials: '', isPublic: true, showRatings: false
     });
+    setShowForm(false);
   };
 
   const handleEdit = (course) => {
@@ -117,63 +118,313 @@ function Teaching() {
       materials: course.materials.map((m) => `${m.type}|${m.title}|${m.url}`).join(', ')
     });
     setFeedbackMsg('');
+    setShowForm(true);
   };
 
   const handleDelete = (id) => {
     setCourses(courses.filter((c) => c._id !== id));
-    setFeedbackMsg('Course deleted.');
+    setFeedbackMsg('Course deleted successfully.');
+  };
+
+  const handleCancel = () => {
+    setEditing(null);
+    setNewCourse({
+      courseTitle: '', courseCode: '', semester: '', year: '', level: 'undergraduate', credits: '', enrollment: '',
+      university: '', department: '', syllabus: '', slides: '', assignments: '', studentRatings: '', feedback: '',
+      description: '', learningObjectives: '', topics: '', materials: '', isPublic: true, showRatings: false
+    });
+    setFeedbackMsg('');
+    setShowForm(false);
   };
 
   return (
-    <div className="teaching-container">
-      <h2>Teaching Portfolio</h2>
-      {feedbackMsg && <div className="feedback">{feedbackMsg}</div>}
-
-      <div className="teaching-form">
-        <input name="courseTitle" placeholder="Course Title" value={newCourse.courseTitle} onChange={handleInput} />
-        <input name="courseCode" placeholder="Course Code" value={newCourse.courseCode} onChange={handleInput} />
-        <input name="semester" placeholder="Semester" value={newCourse.semester} onChange={handleInput} />
-        <input name="year" placeholder="Year" value={newCourse.year} onChange={handleInput} />
-        <input name="level" placeholder="Level (undergraduate/graduate)" value={newCourse.level} onChange={handleInput} />
-        <input name="credits" placeholder="Credits" value={newCourse.credits} onChange={handleInput} />
-        <input name="enrollment" placeholder="Enrollment" value={newCourse.enrollment} onChange={handleInput} />
-        <input name="university" placeholder="University" value={newCourse.university} onChange={handleInput} />
-        <input name="department" placeholder="Department" value={newCourse.department} onChange={handleInput} />
-        <input name="syllabus" placeholder="Syllabus URL" value={newCourse.syllabus} onChange={handleInput} />
-        <input name="slides" placeholder="Slides (comma-separated URLs)" value={newCourse.slides} onChange={handleInput} />
-        <input name="assignments" placeholder="Assignments (comma-separated URLs)" value={newCourse.assignments} onChange={handleInput} />
-        <input name="studentRatings" placeholder="Student Ratings (e.g. 4.5)" value={newCourse.studentRatings} onChange={handleInput} />
-        <textarea name="feedback" placeholder="Feedback (semicolon-separated)" value={newCourse.feedback} onChange={handleInput} />
-        <textarea name="description" placeholder="Course Description" value={newCourse.description} onChange={handleInput} />
-        <input name="learningObjectives" placeholder="Learning Objectives (comma-separated)" value={newCourse.learningObjectives} onChange={handleInput} />
-        <input name="topics" placeholder="Topics Covered (comma-separated)" value={newCourse.topics} onChange={handleInput} />
-        <input name="materials" placeholder="Materials (type|title|url, ...)" value={newCourse.materials} onChange={handleInput} />
-        <label>
-          <input type="checkbox" name="isPublic" checked={newCourse.isPublic} onChange={handleInput} /> Public
-        </label>
-        <label>
-          <input type="checkbox" name="showRatings" checked={newCourse.showRatings} onChange={handleInput} /> Show Ratings
-        </label>
-        <div className="buttons">
-          <button onClick={handleAddOrUpdate}>{editing ? 'Update' : 'Add'} Course</button>
-          {editing && <button className="cancel-btn" onClick={() => { setEditing(null); setNewCourse({ ...newCourse }); setFeedbackMsg(''); }}>Cancel</button>}
+    <div className="teaching-page">
+      <div className="hero-section">
+        <div className="hero-content">
+          <h1>My Teaching Portfolio</h1>
+          <p>Showcasing my courses, educational materials, and teaching contributions</p>
+          <button 
+            className="add-course-btn" 
+            onClick={() => setShowForm(!showForm)}
+          >
+            + Add New Course
+          </button>
         </div>
       </div>
 
-      <ul className="course-list">
-        {courses.map((c) => (
-          <li key={c._id}>
-            <h3>{c.courseTitle} ({c.courseCode})</h3>
-            <p><strong>{c.level.toUpperCase()}</strong> - {c.semester} {c.year} | {c.university}</p>
-            <p>{c.description}</p>
-            {c.showRatings && <p><strong>Rating:</strong> {c.studentRatings}</p>}
-            <div>
-              <button onClick={() => handleEdit(c)}>Edit</button>
-              <button className="delete-btn" onClick={() => handleDelete(c._id)}>Delete</button>
+      <div className="teaching-container">
+        {feedbackMsg && (
+          <div className="feedback-message">
+            <span className="feedback-icon">✓</span>
+            {feedbackMsg}
+          </div>
+        )}
+
+        {showForm && (
+          <div className="form-card">
+            <div className="form-header">
+              <h3>{editing ? 'Edit Course' : 'Add New Course'}</h3>
+              <button className="close-btn" onClick={handleCancel}>×</button>
             </div>
-          </li>
-        ))}
-      </ul>
+            
+            <div className="form-section">
+              <h4>Basic Information</h4>
+              <div className="form-row">
+                <input 
+                  name="courseTitle" 
+                  placeholder="Course Title *" 
+                  value={newCourse.courseTitle} 
+                  onChange={handleInput} 
+                />
+                <input 
+                  name="courseCode" 
+                  placeholder="Course Code *" 
+                  value={newCourse.courseCode} 
+                  onChange={handleInput} 
+                />
+              </div>
+              
+              <div className="form-row">
+                <select name="semester" value={newCourse.semester} onChange={handleInput}>
+                  <option value="">Select Semester</option>
+                  <option value="Fall">Fall</option>
+                  <option value="Spring">Spring</option>
+                  <option value="Summer">Summer</option>
+                </select>
+                <input 
+                  name="year" 
+                  placeholder="Year" 
+                  type="number"
+                  value={newCourse.year} 
+                  onChange={handleInput} 
+                />
+              </div>
+
+              <div className="form-row">
+                <select name="level" value={newCourse.level} onChange={handleInput}>
+                  <option value="undergraduate">Undergraduate</option>
+                  <option value="graduate">Graduate</option>
+                </select>
+                <input 
+                  name="credits" 
+                  placeholder="Credits" 
+                  type="number"
+                  value={newCourse.credits} 
+                  onChange={handleInput} 
+                />
+              </div>
+
+              <div className="form-row">
+                <input 
+                  name="university" 
+                  placeholder="University" 
+                  value={newCourse.university} 
+                  onChange={handleInput} 
+                />
+                <input 
+                  name="department" 
+                  placeholder="Department" 
+                  value={newCourse.department} 
+                  onChange={handleInput} 
+                />
+              </div>
+
+              <textarea 
+                name="description" 
+                placeholder="Course Description" 
+                value={newCourse.description} 
+                onChange={handleInput}
+                rows="3"
+              />
+            </div>
+
+            <div className="form-section">
+              <h4>Course Details</h4>
+              <input 
+                name="enrollment" 
+                placeholder="Enrollment Count" 
+                type="number"
+                value={newCourse.enrollment} 
+                onChange={handleInput} 
+              />
+              <input 
+                name="learningObjectives" 
+                placeholder="Learning Objectives (comma-separated)" 
+                value={newCourse.learningObjectives} 
+                onChange={handleInput} 
+              />
+              <input 
+                name="topics" 
+                placeholder="Topics Covered (comma-separated)" 
+                value={newCourse.topics} 
+                onChange={handleInput} 
+              />
+            </div>
+
+            <div className="form-section">
+              <h4>Materials & Resources</h4>
+              <input 
+                name="syllabus" 
+                placeholder="Syllabus URL" 
+                value={newCourse.syllabus} 
+                onChange={handleInput} 
+              />
+              <input 
+                name="slides" 
+                placeholder="Slides URLs (comma-separated)" 
+                value={newCourse.slides} 
+                onChange={handleInput} 
+              />
+              <input 
+                name="assignments" 
+                placeholder="Assignment URLs (comma-separated)" 
+                value={newCourse.assignments} 
+                onChange={handleInput} 
+              />
+              <input 
+                name="materials" 
+                placeholder="Additional Materials (type|title|url, comma-separated)" 
+                value={newCourse.materials} 
+                onChange={handleInput} 
+              />
+            </div>
+
+            <div className="form-section">
+              <h4>Feedback & Ratings</h4>
+              <input 
+                name="studentRatings" 
+                placeholder="Student Ratings (e.g., 4.5)" 
+                type="number"
+                step="0.1"
+                min="0"
+                max="5"
+                value={newCourse.studentRatings} 
+                onChange={handleInput} 
+              />
+              <textarea 
+                name="feedback" 
+                placeholder="Student Feedback (semicolon-separated)" 
+                value={newCourse.feedback} 
+                onChange={handleInput}
+                rows="3"
+              />
+            </div>
+
+            <div className="form-section">
+              <h4>Visibility Settings</h4>
+              <div className="checkbox-group">
+                <label className="checkbox-label">
+                  <input 
+                    type="checkbox" 
+                    name="isPublic" 
+                    checked={newCourse.isPublic} 
+                    onChange={handleInput} 
+                  />
+                  <span className="checkmark"></span>
+                  Make course public
+                </label>
+                <label className="checkbox-label">
+                  <input 
+                    type="checkbox" 
+                    name="showRatings" 
+                    checked={newCourse.showRatings} 
+                    onChange={handleInput} 
+                  />
+                  <span className="checkmark"></span>
+                  Show student ratings
+                </label>
+              </div>
+            </div>
+
+            <div className="form-actions">
+              <button className="submit-btn" onClick={handleAddOrUpdate}>
+                {editing ? 'Update Course' : 'Add Course'}
+              </button>
+              <button className="cancel-btn" onClick={handleCancel}>
+                Cancel
+              </button>
+            </div>
+          </div>
+        )}
+
+        <div className="courses-grid">
+          {courses.map((course) => (
+            <div key={course._id} className="course-card">
+              <div className="course-header">
+                <div className="course-title-section">
+                  <h3>{course.courseTitle}</h3>
+                  <span className="course-code">{course.courseCode}</span>
+                </div>
+                <div className="course-badges">
+                  <span className={`level-badge ${course.level}`}>
+                    {course.level.toUpperCase()}
+                  </span>
+                  {course.showRatings && (
+                    <span className="rating-badge">
+                      ⭐ {course.studentRatings}
+                    </span>
+                  )}
+                </div>
+              </div>
+
+              <div className="course-meta">
+                <div className="meta-item">
+                  <strong>{course.semester} {course.year}</strong> • {course.university}
+                </div>
+                <div className="meta-item">
+                  {course.department} • {course.credits} Credits • {course.enrollment} Students
+                </div>
+              </div>
+
+              <div className="course-description">
+                <p>{course.description}</p>
+              </div>
+
+              {course.topics && course.topics.length > 0 && (
+                <div className="topics-section">
+                  <h5>Topics Covered:</h5>
+                  <div className="topics-tags">
+                    {course.topics.map((topic, index) => (
+                      <span key={index} className="topic-tag">{topic}</span>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {course.learningObjectives && course.learningObjectives.length > 0 && (
+                <div className="objectives-section">
+                  <h5>Learning Objectives:</h5>
+                  <ul>
+                    {course.learningObjectives.map((objective, index) => (
+                      <li key={index}>{objective}</li>
+                    ))}
+                  </ul>
+                </div>
+              )}
+
+              <div className="course-actions">
+                <button className="edit-btn" onClick={() => handleEdit(course)}>
+                  Edit
+                </button>
+                <button className="delete-btn" onClick={() => handleDelete(course._id)}>
+                  Delete
+                </button>
+              </div>
+            </div>
+          ))}
+        </div>
+
+        {courses.length === 0 && (
+          <div className="empty-state">
+            <div className="empty-icon">📚</div>
+            <h3>No courses added yet</h3>
+            <p>Start building your teaching portfolio by adding your first course</p>
+            <button className="add-first-course-btn" onClick={() => setShowForm(true)}>
+              Add Your First Course
+            </button>
+          </div>
+        )}
+      </div>
     </div>
   );
 }

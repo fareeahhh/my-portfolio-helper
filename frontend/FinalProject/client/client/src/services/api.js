@@ -87,7 +87,8 @@ export const updateBlog = (id, data) => API.put(`/blog/${id}`, data);
 export const deleteBlog = (id) => API.delete(`/blog/${id}`);
 
 // ------------------ ANALYTICS ------------------
-export const getAnalytics = () => API.get("/analytics");
+export const fetchAnalytics = (userId) => API.get(`/analytics/user/${userId}`);
+export const getAnalyticsSummary = () => API.get("/analytics/summary");
 
 // ------------------ CONTACT ------------------
 // If you set up a contact route (optional)

@@ -114,9 +114,9 @@ function Navbar() {
               </div>
             </div>
 
-            <Link to="/analyticsdashboard" className="nav-link">
+            {/* <Link to="/analyticsdashboard" className="nav-link">
               <span className="nav-link-text">Analytics</span>
-            </Link>
+            </Link> */}
             <Link to="/grants" className="nav-link">
               <span className="nav-link-text">Grants</span>
             </Link>
